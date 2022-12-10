@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="utf8mb4" collation="utf8mb4_general_ci">minimarket</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="admin" view="colnames">
+<left>220</left>
+<top>210</top>
+<width>147</width>
+<height>145</height>
+<sql_create_table>CREATE TABLE `admin` (
+  `adminid` char(10) NOT NULL,
+  `adminnamapass` varchar(100) DEFAULT NULL,
+  `adminkaryawanid` char(10) DEFAULT NULL,
+  `adminaktif` int(11) DEFAULT NULL,
+  `adminlevel` int(11) DEFAULT NULL,
+  PRIMARY KEY (`adminid`),
+  KEY `adminkaryawanid` (`adminkaryawanid`),
+  CONSTRAINT `admin_ibfk_1` FOREIGN KEY (`adminkaryawanid`) REFERENCES `karyawan` (`karyawanid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+<table name="barang" view="colnames">
+<left>423</left>
+<top>45</top>
+<width>145</width>
+<height>235</height>
+<sql_create_table>CREATE TABLE `barang` (
+  `barangid` char(10) NOT NULL,
+  `barangbarcode` varchar(50) DEFAULT NULL,
+  `barangnama` varchar(100) DEFAULT NULL,
+  `barangsatuan` varchar(20) DEFAULT NULL,
+  `barangkategoriid` char(5) DEFAULT NULL,
+  `baranghargajual` double DEFAULT NULL,
+  `barangstok` int(11) DEFAULT NULL,
+  `barangtglinput` datetime DEFAULT NULL,
+  `baranglastupdate` datetime DEFAULT NULL,
+  `barangadminid` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`barangid`),
+  KEY `barangkategoriid` (`barangkategoriid`),
+  KEY `barangadminid` (`barangadminid`),
+  CONSTRAINT `barang_ibfk_1` FOREIGN KEY (`barangkategoriid`) REFERENCES `kategori` (`kategoriid`),
+  CONSTRAINT `barang_ibfk_2` FOREIGN KEY (`barangadminid`) REFERENCES `admin` (`adminid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+<table name="beli" view="colnames">
+<left>10</left>
+<top>7</top>
+<width>128</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `beli` (
+  `belinofak` char(15) NOT NULL,
+  `belitgl` datetime DEFAULT NULL,
+  `belipemasokid` char(7) DEFAULT NULL,
+  `belidisc` int(11) DEFAULT NULL,
+  `belitotalkotor` double DEFAULT NULL,
+  `belitotalbersih` double DEFAULT NULL,
+  `beliadminid` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`belinofak`),
+  KEY `belipemasokid` (`belipemasokid`),
+  KEY `beliadminid` (`beliadminid`),
+  CONSTRAINT `beli_ibfk_1` FOREIGN KEY (`belipemasokid`) REFERENCES `pemasok` (`pemasokid`),
+  CONSTRAINT `beli_ibfk_2` FOREIGN KEY (`beliadminid`) REFERENCES `admin` (`adminid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+<table name="detailbeli" view="colnames">
+<left>217</left>
+<top>11</top>
+<width>123</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `detailbeli` (
+  `dbeliid` char(20) NOT NULL,
+  `dbelinofak` char(15) DEFAULT NULL,
+  `dbelibarangid` char(10) DEFAULT NULL,
+  `dbeliqty` int(11) DEFAULT NULL,
+  `dbeliharga` double DEFAULT NULL,
+  PRIMARY KEY (`dbeliid`),
+  KEY `dbelibarangid` (`dbelibarangid`),
+  CONSTRAINT `detailbeli_ibfk_1` FOREIGN KEY (`dbelibarangid`) REFERENCES `beli` (`belinofak`),
+  CONSTRAINT `detailbeli_ibfk_2` FOREIGN KEY (`dbelibarangid`) REFERENCES `barang` (`barangid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+<table name="detailjual" view="colnames">
+<left>777</left>
+<top>11</top>
+<width>127</width>
+<height>151</height>
+<sql_create_table>CREATE TABLE `detailjual` (
+  `djualid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `djualjualnofak` varchar(15) DEFAULT NULL,
+  `djualbarangid` char(10) DEFAULT NULL,
+  `djualqty` int(11) DEFAULT NULL,
+  `djualharga` double DEFAULT NULL,
+  PRIMARY KEY (`djualid`),
+  KEY `djualbarangid` (`djualbarangid`),
+  KEY `djualjualnofak` (`djualjualnofak`),
+  CONSTRAINT `detailjual_ibfk_1` FOREIGN KEY (`djualbarangid`) REFERENCES `barang` (`barangid`),
+  CONSTRAINT `detailjual_ibfk_2` FOREIGN KEY (`djualjualnofak`) REFERENCES `jual` (`jualnofak`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+<table name="jual" view="colnames">
+<left>627</left>
+<top>269</top>
+<width>127</width>
+<height>162</height>
+<sql_create_table>CREATE TABLE `jual` (
+  `jualnofak` char(15) NOT NULL,
+  `jualtgl` datetime DEFAULT NULL,
+  `jualdisc` int(11) DEFAULT NULL,
+  `jualtotalkotor` double DEFAULT NULL,
+  `jualtotalbersih` double DEFAULT NULL,
+  `jualadminid` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`jualnofak`),
+  KEY `jualadminid` (`jualadminid`),
+  CONSTRAINT `jual_ibfk_1` FOREIGN KEY (`jualadminid`) REFERENCES `admin` (`adminid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+<table name="karyawan" view="colnames">
+<left>391</left>
+<top>401</top>
+<width>141</width>
+<height>179</height>
+<sql_create_table>CREATE TABLE `karyawan` (
+  `karyawanid` char(10) NOT NULL,
+  `karyawannama` varchar(50) DEFAULT NULL,
+  `karyawanjkl` char(1) DEFAULT NULL,
+  `karyawantmplhr` varchar(30) DEFAULT NULL,
+  `karyawantgllhr` date DEFAULT NULL,
+  `karyawannohp` varchar(16) DEFAULT NULL,
+  `karyawanalamat` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`karyawanid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+<table name="kategori" view="colnames">
+<left>621</left>
+<top>113</top>
+<width>125</width>
+<height>98</height>
+<sql_create_table>CREATE TABLE `kategori` (
+  `kategoriid` char(5) NOT NULL,
+  `kategorinama` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`kategoriid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+<table name="pemasok" view="colnames">
+<left>161</left>
+<top>368</top>
+<width>137</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `pemasok` (
+  `pemasokid` char(7) NOT NULL,
+  `pemasoknama` varchar(100) DEFAULT NULL,
+  `pemasokalamat` varchar(200) DEFAULT NULL,
+  `pemasoknotelp` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`pemasokid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+<table name="temp" view="colnames">
+<left>832</left>
+<top>257</top>
+<width>79</width>
+<height>112</height>
+<sql_create_table>CREATE TABLE `temp` (
+  `id` char(10) NOT NULL,
+  `qty` int(11) DEFAULT NULL,
+  `harga` double DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>
